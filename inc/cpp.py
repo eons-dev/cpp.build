@@ -12,6 +12,8 @@ class cpp(Builder):
     def __init__(self, name="C++ Builder"):
         super().__init__(name)
 
+        self.clearBuildPath = True
+
         self.supportedProjectTypes.append("lib")
         self.supportedProjectTypes.append("mod")
         self.supportedProjectTypes.append("bin")
@@ -35,29 +37,19 @@ class cpp(Builder):
 
     # Required Builder method. See that class for details.
     def Build(self):
-        config_file = open(os.path.join(self.rootPath, "config.json"), "r")
-        self.config = jsonpickle.decode(config_file.read())
-
-        self.buildPath = os.path.join(self.rootPath, self.buildPath)
-        if (os.path.exists(self.buildPath)):
-            logging.info(f"DELETING {self.buildPath}")
-            shutil.rmtree(self.buildPath)
-        mkpath(self.buildPath)
-        os.chdir(self.buildPath)
-
         self.packageName = self.projectName;
-        if ("name" in self.config):
+        if (self.config is not None and "name" in self.config):
             self.packageName = self.config["name"]
 
         self.packagePath = os.path.join(self.buildPath, "out")
         mkpath(self.packagePath)
 
         self.cpp_version = 11;
-        if ("cpp_version" in self.config):
+        if (self.config is not None and "cpp_version" in self.config):
             self.cpp_version = self.config["cpp_version"]
 
         self.cmake_version = "3.1.1";
-        if ("cmake_version" in self.config):
+        if (self.config is not None and "cmake_version" in self.config):
             self.cmake_version = self.config["cmake_version"]
 
         logging.debug(f"Building in {self.buildPath}")
@@ -136,7 +128,7 @@ target_link_libraries({self.packageName} Threads::Threads)
             cmake_file.write(f"target_link_directories({self.packageName} PUBLIC {self.libPath}))\n")
             cmake_file.write(f"target_link_libraries({self.packageName} {self.GetLibs(self.libPath)})\n")
 
-        if ("libs_shared" in self.config):
+        if (self.config is not None and "libs_shared" in self.config):
             cmake_file.write(f"target_link_libraries({self.packageName} {' '.join(self.config['libs_shared'])})\n")
 
         cmake_file.close()

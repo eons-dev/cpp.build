@@ -14,12 +14,10 @@ class cpp(Builder):
 
         self.clearBuildPath = True
 
-        self.requiredKWArgs.append()
-
-        self.optionalKWArgs.["cpp_version"] = 11
-        self.optionalKWArgs.["cmake_version"] = "3.1.1"
-        self.optionalKWArgs.["name"] = "REPLACEME"
-        self.optionalKWArgs.["libs_shared"] = None
+        self.optionalKWArgs["cpp_version"] = 11
+        self.optionalKWArgs["cmake_version"] = "3.1.1"
+        self.optionalKWArgs["name"] = "REPLACEME"
+        self.optionalKWArgs["libs_shared"] = None
 
         self.supportedProjectTypes.append("lib")
         self.supportedProjectTypes.append("mod")

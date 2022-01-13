@@ -16,7 +16,7 @@ class cpp(Builder):
 
         self.optionalKWArgs["cpp_version"] = 11
         self.optionalKWArgs["cmake_version"] = "3.1.1"
-        self.optionalKWArgs["name"] = "REPLACEME"
+        self.optionalKWArgs["file_name"] = None
         self.optionalKWArgs["libs_shared"] = None
 
         self.supportedProjectTypes.append("lib")
@@ -36,14 +36,14 @@ class cpp(Builder):
 
     # Required Builder method. See that class for details.
     def DidBuildSucceed(self):
-        result = os.path.join(self.packagePath,self.name)
+        result = os.path.join(self.packagePath,self.file_name)
         logging.debug(f"Checking if build was successful; output should be {result}")
         return os.path.isfile(result)
 
     # Required Builder method. See that class for details.
     def Build(self):
-        if (self.name == "C++ Builder"):
-            self.name = self.projectName
+        if (self.file_name is None):
+            self.file_name = self.projectName
 
         self.packagePath = os.path.join(self.buildPath, "out")
         mkpath(self.packagePath)
@@ -91,7 +91,7 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY {self.packagePath})
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY {self.packagePath})
 ''')
 
-        cmakeFile.write(f"project({self.name})\n")
+        cmakeFile.write(f"project({self.file_name})\n")
 
         if (self.incPath is not None):
             cmakeFile.write(f"include_directories({self.incPath})\n")
@@ -99,33 +99,33 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY {self.packagePath})
         if (self.projectType in ["bin", "test", "srv"]):
             logging.info("Addind binary specific code")
 
-            cmakeFile.write(f"add_executable({self.name} {self.GetSourceFiles(self.srcPath)})\n")
+            cmakeFile.write(f"add_executable({self.file_name} {self.GetSourceFiles(self.srcPath)})\n")
 
         if (self.projectType in ["lib", "mod"]):
             logging.info("Adding library specific code")
 
             # #TODO: support windows install targets
             installSrcPath = f"/usr/local/lib"
-            installIncPath = f"/usr/local/include/{self.name}"
+            installIncPath = f"/usr/local/include/{self.file_name}"
 
-            cmakeFile.write(f"add_library ({self.name} SHARED {self.GetSourceFiles(self.srcPath)})\n")
+            cmakeFile.write(f"add_library ({self.file_name} SHARED {self.GetSourceFiles(self.srcPath)})\n")
             cmakeFile.write(
-                f"set_target_properties({self.name} PROPERTIES PUBLIC_HEADER \"{self.GetSourceFiles(self.incPath, ';')}\")\n")
+                f"set_target_properties({self.file_name} PROPERTIES PUBLIC_HEADER \"{self.GetSourceFiles(self.incPath, ';')}\")\n")
             cmakeFile.write(
-                f"INSTALL(TARGETS {self.name} LIBRARY DESTINATION {installSrcPath} PUBLIC_HEADER DESTINATION {installIncPath})\n")
+                f"INSTALL(TARGETS {self.file_name} LIBRARY DESTINATION {installSrcPath} PUBLIC_HEADER DESTINATION {installIncPath})\n")
 
         cmakeFile.write(f'''
 set(THREADS_PREFER_PTHREAD_FLAG ON)
 find_package(Threads REQUIRED)
-target_link_libraries({self.name} Threads::Threads)
+target_link_libraries({self.file_name} Threads::Threads)
 ''')
         if (self.libPath is not None):
             cmakeFile.write(f"include_directories({self.libPath})\n")
-            cmakeFile.write(f"target_link_directories({self.name} PUBLIC {self.libPath}))\n")
-            cmakeFile.write(f"target_link_libraries({self.name} {self.GetLibs(self.libPath)})\n")
+            cmakeFile.write(f"target_link_directories({self.file_name} PUBLIC {self.libPath}))\n")
+            cmakeFile.write(f"target_link_libraries({self.file_name} {self.GetLibs(self.libPath)})\n")
 
         if (self.libs_shared is not None):
-            cmakeFile.write(f"target_link_libraries({self.name} {' '.join(self.libs_shared)})\n")
+            cmakeFile.write(f"target_link_libraries({self.file_name} {' '.join(self.libs_shared)})\n")
 
         cmakeFile.close()
 

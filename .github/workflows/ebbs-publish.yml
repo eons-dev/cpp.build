@@ -29,4 +29,4 @@ jobs:
         pip install ebbs
     - name: Publish
       run: |
-        ebbs -v -l publish inc --repo-username "${{ secrets.INFRASTRUCTURE_USERNAME }}" --repo-password "${{ secrets.INFRASTRUCTURE_PASSWORD }}" --version "${{ github.event.release.tag_name }}" --visibility 'public'
+        ebbs -v -b publish . -i inc --repo-username "${{ secrets.INFRASTRUCTURE_USERNAME }}" --repo-password "${{ secrets.INFRASTRUCTURE_PASSWORD }}" --version "${{ github.event.release.tag_name }}" --visibility 'public'

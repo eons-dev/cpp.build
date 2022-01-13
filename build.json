@@ -1,0 +1,15 @@
+{
+  "clear_build_path" : true,
+  "ebbs_next": [
+    {
+      "build" : "publish",
+      "run_when" : "release",
+      "copy" : [
+        {"../inc/" : "inc/"}
+      ],
+      "config" : {
+        "visibility" : "public"
+      }
+    }
+  ]
+}

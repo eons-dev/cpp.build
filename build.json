@@ -3,7 +3,9 @@
   "ebbs_next": [
     {
       "build" : "publish",
-      "run_when" : "release",
+      "run_when" : [
+      	"release"
+      ],
       "copy" : [
         {"../inc/" : "inc/"}
       ],

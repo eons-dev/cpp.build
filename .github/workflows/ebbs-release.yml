@@ -20,4 +20,4 @@ jobs:
         pip install ebbs
     - name: Build
       run: |
-        ebbs -v . --repo-username "${{ secrets.INFRASTRUCTURE_USERNAME }}" --repo-password "${{ secrets.INFRASTRUCTURE_PASSWORD }}" --version "${{ github.event.release.tag_name }}" --event "release"
+        ebbs -v . --repo-username "${{ secrets.INFRASTRUCTURE_USERNAME }}" --repo-password "${{ secrets.INFRASTRUCTURE_PASSWORD }}" --version "${{ github.event.release.tag_name }}" --event release

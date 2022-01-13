@@ -3,6 +3,7 @@
   "ebbs_next": [
     {
       "build" : "publish",
+      "build_in" : "inc",
       "run_when" : [
       	"release"
       ],
@@ -10,6 +11,7 @@
         {"../inc/" : "inc/"}
       ],
       "config" : {
+      	"clear_build_path" : false,
         "visibility" : "public"
       }
     }

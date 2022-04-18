@@ -18,6 +18,7 @@ class cpp(Builder):
         this.optionalKWArgs["cmake_version"] = "3.1.1"
         this.optionalKWArgs["file_name"] = None
         this.optionalKWArgs["libs_shared"] = None
+        this.optionalKWArgs["output_dir"] = "out"
 
         this.supportedProjectTypes.append("lib")
         this.supportedProjectTypes.append("mod")
@@ -45,7 +46,7 @@ class cpp(Builder):
         if (this.file_name is None):
             this.file_name = this.projectName
 
-        this.packagePath = os.path.join(this.buildPath, "out")
+        this.packagePath = os.path.join(this.buildPath, this.output_dir)
         mkpath(this.packagePath)
 
         logging.debug(f"Building in {this.buildPath}")
@@ -86,6 +87,7 @@ class cpp(Builder):
         cmakeFile.write(f'''
 cmake_minimum_required (VERSION {this.cmake_version})
 set (CMAKE_CXX_STANDARD {this.cpp_version})
+set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY {this.packagePath})
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY {this.packagePath})
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY {this.packagePath})
@@ -126,6 +128,7 @@ target_link_libraries({this.file_name} Threads::Threads)
 
         if (this.libs_shared is not None):
             cmakeFile.write(f"target_link_libraries({this.file_name} {' '.join(this.libs_shared)})\n")
+            cmakeFile.write('set(CMAKE_CXX_LINK_EXECUTABLE "<CMAKE_CXX_COMPILER>  <FLAGS> <CMAKE_CXX_LINK_FLAGS> <LINK_FLAGS> <OBJECTS> -o <TARGET> -Wl,--start-group -Wl,--whole-archive <LINK_LIBRARIES> -Wl,--no-whole-archive -Wl,--end-group")') #per https://stackoverflow.com/questions/53071878/using-whole-archive-linker-option-with-cmake-and-libraries-with-other-library
 
         cmakeFile.close()
 

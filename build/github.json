@@ -1,4 +1,7 @@
 {
+  "name" : "cpp",
+  "type" : "build",
+  "build_in" : "github",
   "clear_build_path" : true,
   "next": [
     {

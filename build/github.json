@@ -1,6 +1,6 @@
 {
   "clear_build_path" : true,
-  "ebbs_next": [
+  "next": [
     {
       "build" : "publish",
       "build_in" : "inc",
@@ -8,7 +8,7 @@
       	"release"
       ],
       "copy" : [
-        {"../inc/" : "inc/"}
+        {"../../inc/" : "inc/"}
       ],
       "config" : {
       	"clear_build_path" : false,

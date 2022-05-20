@@ -22,6 +22,7 @@ class cpp(Builder):
         this.optionalKWArgs["toolchain"] = None
         this.optionalKWArgs["toolchain_dir"] = "tool"
         this.optionalKWArgs["define"] = None
+        this.optionalKWArgs["build_type"] = "Debug"
         this.optionalKWArgs["install_bin_to"] = "/usr/local/bin"
         this.optionalKWArgs["install_inc_to"] = "/usr/local/include"
         this.optionalKWArgs["install_lib_to"] = "/usr/local/lib"
@@ -67,10 +68,10 @@ class cpp(Builder):
         logging.debug(f"Packaging in {this.packagePath}")
 
         this.GenCMake()
-        
+
         if (this.projectIsLib):
             this.GenSingleHeader()
-        
+
         this.CMake(".")
         this.Make()
 
@@ -111,6 +112,7 @@ set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY {this.packagePath})
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY {this.packagePath})
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY {this.packagePath})
+set(CMAKE_BUILD_TYPE {this.build_type}) 
 ''')
 
         if (this.toolchain is not None):
@@ -148,7 +150,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY {this.packagePath})
                     cmakeFile.write(f"{key}")
                 else:
                     cmakeFile.write(f"{key}={value}")
-                cmakeFile.write(" ")    
+                cmakeFile.write(" ")
             cmakeFile.write(")\n")
 
         cmakeFile.write(f'''

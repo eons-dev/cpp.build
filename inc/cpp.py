@@ -119,7 +119,7 @@ set(CMAKE_BUILD_TYPE {this.build_type})
 
             # Make sure we have the toolchain.
             if (not os.path.isdir(this.toolPath)):
-                toolchainSourcePath = os.path.join(this.executor.args.repo_store,f"toolchain_{this.toolchain}")
+                toolchainSourcePath = os.path.join(this.executor.repo.store,f"toolchain_{this.toolchain}")
                 if (not os.path.isdir(toolchainSourcePath)):
                     this.executor.DownloadPackage(f"toolchain_{this.toolchain}", registerClasses=False, createSubDirectory=True)
                 copy_tree(toolchainSourcePath, this.toolPath)

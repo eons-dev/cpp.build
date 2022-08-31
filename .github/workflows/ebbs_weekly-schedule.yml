@@ -1,11 +1,11 @@
-name: ebbs release event
+name: ebbs schedule weekly
 
 on:
-  release:
-    types: [created]
+  schedule:
+    - cron: "0 1 * * 1"
 
 jobs:
-  deploy:
+  schedule:
 
     runs-on: ubuntu-latest
 
@@ -21,12 +21,8 @@ jobs:
         pip install eot
     - name: Build
       env:
-        pypi_username: ${{ secrets.PYPI_USERNAME }}
-        pypi_password: ${{ secrets.PYPI_PASSWORD }}
-        docker_username: ${{ secrets.DOCKER_USERNAME }}
-        docker_password: ${{ secrets.DOCKER_PASSWORD }}
         repo_username: ${{ secrets.INFRASTRUCTURE_USERNAME }}
         repo_password: ${{ secrets.INFRASTRUCTURE_PASSWORD }}
       run: |
         cd build
-        ebbs -v . --config "github.json" --version "${{ github.event.release.tag_name }}" --event "release"
+        ebbs -v -e "github" -e "schedule" -e "weekly"

@@ -1,7 +1,7 @@
-name: ebbs pull request event
+name: ebbs event push
 
 on:
-  pull_request:
+  push:
     branches: [ main ]
 
 jobs:
@@ -25,4 +25,4 @@ jobs:
         repo_password: ${{ secrets.INFRASTRUCTURE_PASSWORD }}
       run: |
         cd build
-        ebbs -v . --config "github.json" --event "pull_request"
+        ebbs -v -e "github" -e "push"

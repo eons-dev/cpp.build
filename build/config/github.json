@@ -10,7 +10,7 @@
         {"../../../inc/cpp.py" : "build_cpp/cpp.py"}
       ],
       "config" : {
-        "name" : "proxy",
+        "name" : "cpp",
         "type" : "build",
         "clear_build_path" : false,
         "visibility" : "public"

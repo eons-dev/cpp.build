@@ -25,4 +25,4 @@ jobs:
         repo_password: ${{ secrets.INFRASTRUCTURE_PASSWORD }}
       run: |
         cd build
-        ebbs -v -e "github" -e "schedule" -e "weekly"
+        ebbs -vvv -e "github" -e "schedule" -e "weekly"

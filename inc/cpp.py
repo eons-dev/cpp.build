@@ -12,25 +12,23 @@ class cpp(Builder):
 
 		this.clearBuildPath = True
 
-		this.optionalKWArgs["cpp_versions"] = [
+		this.arg.kw.optional["cpp_versions"] = [
 			98,
 			11,
 			17,
 			20
 		]
-		this.optionalKWArgs["cmake_version"] = "3.12.0"
-		this.optionalKWArgs["file_name"] = None
-		this.optionalKWArgs["dep_lib"] = None
-		this.optionalKWArgs["output_dir"] = "out"
-		this.optionalKWArgs["toolchains"] = [
-			"x86_64"
-		]
-		this.optionalKWArgs["toolchain_dir"] = "tool"
-		this.optionalKWArgs["define"] = None
-		this.optionalKWArgs["build_type"] = "Debug"
-		this.optionalKWArgs["install_bin_to"] = "/usr/local/bin"
-		this.optionalKWArgs["install_inc_to"] = "/usr/local/include"
-		this.optionalKWArgs["install_lib_to"] = "/usr/local/lib"
+		this.arg.kw.optional["cmake_version"] = "3.12.0"
+		this.arg.kw.optional["file_name"] = None
+		this.arg.kw.optional["dep_lib"] = None
+		this.arg.kw.optional["output_dir"] = "out"
+		this.arg.kw.optional["toolchains"] = []
+		this.arg.kw.optional["toolchain_dir"] = "tool"
+		this.arg.kw.optional["define"] = None
+		this.arg.kw.optional["build_type"] = "Debug"
+		this.arg.kw.optional["install_bin_to"] = "/usr/local/bin"
+		this.arg.kw.optional["install_inc_to"] = "/usr/local/include"
+		this.arg.kw.optional["install_lib_to"] = "/usr/local/lib"
 
 		this.supportedProjectTypes.append("lib")
 		this.supportedProjectTypes.append("mod")
@@ -83,11 +81,17 @@ class cpp(Builder):
 	def PopulateBuildTargets(this):
 		this.buildTargets = {}
 		for cpp_version in this.cpp_versions:
-			for toolchain in this.toolchains:
-				this.buildTargets[f"lib_{toolchain}_cpp{cpp_version}_bio"] = {
+			if (this.toolchains == []):
+				this.buildTargets[f"lib_cpp{cpp_version}_bio"] = {
 					'cpp_version': cpp_version,
-					'toolchain': toolchain
+					'toolchain': None
 				}
+			else:
+				for toolchain in this.toolchains:
+					this.buildTargets[f"lib_{toolchain}_cpp{cpp_version}_bio"] = {
+						'cpp_version': cpp_version,
+						'toolchain': toolchain
+					}
 
 	def BuildTarget(this, target, settings):
 		this.originalPackagePath = this.packagePath
@@ -98,7 +102,7 @@ class cpp(Builder):
 		this.toolchain = settings["toolchain"]
 		
 		this.GenCMake()
-		
+
 		if (this.projectIsLib):
 			this.GenSingleHeader()
 
